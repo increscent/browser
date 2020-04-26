@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+		<meta name='viewport' 
+			content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'>
+
+        <title>Browser</title>
+    </head>
+
+    <body>
+        <a href="{{{folder}}}">{{folder}}</a>
+        <br><br>
+
+        <form onsubmit="save(event)">
+            <input type="text" id="filepath" value={{path}}>
+            <br><br>
+            <textarea style="width: 100%" rows="40" id="text">{{text}}</textarea>
+            <br><br>
+            <input type="submit" value="save">
+        </form>
+
+        <script type="text/javascript">
+            function save(event) {
+                event.preventDefault();
+
+                let path = document.getElementById('filepath').value.split('/').filter(x => x).join('/');
+                let text = document.getElementById('text').value;
+
+                fetch(`/${path}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': '{{{contentType}}}',
+                    },
+                    body: text,
+                })
+                .then((res) => {
+                    console.log(res);
+                    if (!res.ok) alert('failed to save');
+                });
+            }
+        </script>
+    </body>
+</html>
