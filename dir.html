@@ -20,5 +20,39 @@
             <br>
         {{/files}}
         </ul>
+
+        <br><br>
+        <form onsubmit="upload(event)">
+            <input type="text" id="filepath" value="{{{upperPath}}}">
+            <input type="file" id="file" onchange="onFileSelect(event)">
+            <input type="submit" value="upload">
+        </form>
+
+        <script type="text/javascript">
+            function onFileSelect(event) {
+                document.getElementById('filepath').value = 
+                    '{{{upperPath}}}' + event.target.files[0].name;
+            }
+
+            function upload(event) {
+                event.preventDefault();
+
+                let file = document.getElementById('file').files[0];
+                let path = document.getElementById('filepath').value.split('/').filter(x => x).join('/');
+                let contentType = file.type;
+
+                fetch(`/${path}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': contentType,
+                    },
+                    body: file,
+                })
+                .then((res) => {
+                    console.log(res);
+                    if (!res.ok) alert('failed to save');
+                });
+            }
+        </script>
     </body>
 </html>
